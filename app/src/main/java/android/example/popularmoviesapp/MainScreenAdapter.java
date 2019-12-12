@@ -52,11 +52,13 @@ public class MainScreenAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MainScreenViewHolder convertedHolder= (MainScreenViewHolder) holder;
-        String[] temp = data[position].split("<+>");
+        String[] temp = data[position].split(" ");
         String url = temp[0];
         String title = temp[1];
         convertedHolder.movieTitle.setText(title);
-        Picasso.get().load(url).into(convertedHolder.moviePoster);
+        Picasso.get().
+                load(url).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                into(convertedHolder.moviePoster);
     }
 
     @Override
