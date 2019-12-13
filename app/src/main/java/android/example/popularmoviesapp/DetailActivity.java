@@ -25,25 +25,28 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra("my_extra_data");
 
-        String[] temp = message.split(" ");
-        String url = temp[0];
-        String title = temp[1];
+        String[] data = message.split("^");
+        String posterUrl = data[0];
+        String title = data[1];
+        String userRating = data[2];
+        String releaseYear = data[3];
+        String description = data[4];
 
         movieTitle = (TextView) findViewById(R.id.detail_tv_original_title);
         movieTitle.setText(title);
 
         movieUserRating = (TextView) findViewById(R.id.detail_tv_user_rating);
-        movieUserRating.setText(title);
+        movieUserRating.setText(userRating);
 
         movieReleaseYear = (TextView) findViewById(R.id.detail_tv_release_year);
-        movieReleaseYear.setText(title);
+        movieReleaseYear.setText(releaseYear);
 
         movieDesc = (TextView) findViewById(R.id.detail_tv_synopsis);
-        movieDesc.setText(title);
+        movieDesc.setText(description);
 
         moviePoster = (ImageView) findViewById(R.id.detail_iv_poster);
         Picasso.get().
-                load(url).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                load(posterUrl).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(moviePoster);
 
     }

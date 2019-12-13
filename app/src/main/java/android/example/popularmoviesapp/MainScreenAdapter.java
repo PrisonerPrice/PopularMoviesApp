@@ -39,7 +39,6 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
         @Override
         public void onClick(View v) {
-            Log.d("XXXXX","From onClick: " + getAdapterPosition());
             myClickListener.onItemClick(getAdapterPosition());
         }
     }
@@ -63,10 +62,11 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
     @Override
     public void onBindViewHolder(MainScreenViewHolder holder, int position) {
-        String[] temp = data[position].split(" ");
+        String[] temp = data[position].split("  ");
         String url = temp[0];
         String title = temp[1];
         holder.movieTitle.setText(title);
+        Picasso.get().setLoggingEnabled(true);
         Picasso.get().
                 load(url).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(holder.moviePoster);
