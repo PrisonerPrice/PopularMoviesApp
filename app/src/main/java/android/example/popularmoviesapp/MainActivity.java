@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
     @Override
     public void onItemClick(int position) {
-        //Toast.makeText(this, "" + position + "!!!", Toast.LENGTH_SHORT).show();
-        Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        Intent detailIntent = new Intent(this, DetailActivity.class);
         detailIntent.putExtra("my_extra_data", dataGenerator()[position]);
         startActivity(detailIntent);
 

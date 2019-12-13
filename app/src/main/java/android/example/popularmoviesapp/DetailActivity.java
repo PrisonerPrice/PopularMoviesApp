@@ -41,6 +41,7 @@ public class DetailActivity extends AppCompatActivity {
         movieDesc = (TextView) findViewById(R.id.detail_tv_synopsis);
         movieDesc.setText(title);
 
+        moviePoster = (ImageView) findViewById(R.id.detail_iv_poster);
         Picasso.get().
                 load(url).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(moviePoster);
