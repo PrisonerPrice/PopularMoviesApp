@@ -5,9 +5,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainScreenAdapter.MyClickListener{
 
     private MainScreenAdapter mainScreenAdapter;
     private RecyclerView mainScreenSingleView;
@@ -19,20 +22,34 @@ public class MainActivity extends AppCompatActivity {
 
         mainScreenSingleView = (RecyclerView) findViewById(R.id.rv_main_screen);
 
-        // Generate fake data
-        String[] fakeData = new String[25];
-        for(int i = 0; i < fakeData.length; i++){
-            fakeData[i] =
-                    "https://avatars3.githubusercontent.com/u/15194056?s=400&u=d3288d844f9be0a7ca38a81caf29ce1d67586afd&v=4" +
-                    " " + i;
-        }
+        String[] fakeData = dataGenerator();
 
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mainScreenSingleView.setLayoutManager(staggeredGridLayoutManager);
 
         mainScreenSingleView.setHasFixedSize(true);
 
-        mainScreenAdapter = new MainScreenAdapter(fakeData);
+        mainScreenAdapter = new MainScreenAdapter(fakeData, this);
         mainScreenSingleView.setAdapter(mainScreenAdapter);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        //Toast.makeText(this, "" + position + "!!!", Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        detailIntent.putExtra("my_extra_data", dataGenerator()[position]);
+        startActivity(detailIntent);
+
+    }
+
+    public String[] dataGenerator(){
+        // Generate fake data
+        String[] fakeData = new String[25];
+        for(int i = 0; i < fakeData.length; i++){
+            fakeData[i] =
+                    "https://avatars3.githubusercontent.com/u/15194056?s=400&u=d3288d844f9be0a7ca38a81caf29ce1d67586afd&v=4" +
+                            " " + i;
+        }
+        return fakeData;
     }
 }
