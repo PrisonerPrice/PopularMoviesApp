@@ -36,17 +36,17 @@ public class DetailActivity extends AppCompatActivity {
         movieTitle.setText(title);
 
         movieUserRating = (TextView) findViewById(R.id.detail_tv_user_rating);
-        movieUserRating.setText(userRating);
+        movieUserRating.setText("User Rating: " + userRating + " / 10");
 
         movieReleaseYear = (TextView) findViewById(R.id.detail_tv_release_year);
-        movieReleaseYear.setText(releaseYear);
+        movieReleaseYear.setText("Release year: "+ releaseYear);
 
         movieDesc = (TextView) findViewById(R.id.detail_tv_synopsis);
         movieDesc.setText(description);
 
         moviePoster = (ImageView) findViewById(R.id.detail_iv_poster);
         Picasso.get().
-                load(posterUrl).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                load(posterUrl).centerCrop().resize(750, 1200).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(moviePoster);
 
     }

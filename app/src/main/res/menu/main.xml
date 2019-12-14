@@ -8,7 +8,7 @@
         android:id="@+id/action_popularity"
         android:orderInCategory="1"
         android:title="Sort with Popularity"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_Rating"

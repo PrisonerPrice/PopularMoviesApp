@@ -46,7 +46,7 @@ public class NetworkUtils {
             String description = null;
             posterUrl += movie.getString("poster_path");
             title = movie.getString("title");
-            userRating = movie.getString("vote_count");
+            userRating = movie.getString("vote_average");
             releaseYear = movie.getString("release_date").substring(0,4);
             description = movie.getString("overview");
             record = posterUrl + "  " +

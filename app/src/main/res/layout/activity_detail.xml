@@ -17,9 +17,12 @@
         android:id="@+id/detail_tv_original_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"/>
+        android:textColor="@color/colorWhite"
+        android:textSize="24dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -29,27 +32,25 @@
             android:id="@+id/detail_tv_user_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
             android:layout_marginLeft="4dp"
+            android:layout_alignParentLeft="true"
             android:textColor="@color/colorWhite"/>
 
         <TextView
             android:id="@+id/detail_tv_release_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
             android:layout_marginRight="4dp"
+            android:layout_alignParentRight="true"
             android:textColor="@color/colorWhite"/>
 
-    </LinearLayout>
-
-
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/detail_tv_synopsis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
         android:textColor="@color/colorWhite"/>
-
 
 </LinearLayout>
