@@ -1,16 +1,10 @@
 package android.example.popularmoviesapp;
 
-import android.content.res.Resources;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.lang.Object;
 import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
