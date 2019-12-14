@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark">
 
     <ImageView
         android:id="@+id/main_screen_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:foregroundGravity="top"/>
 
     <TextView
         android:id="@+id/main_screen_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorWhite"
+        android:layout_alignBottom="@+id/main_screen_image_view"/>
 
-</LinearLayout>
+</RelativeLayout>

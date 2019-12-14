@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -36,10 +37,10 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
         mainScreenSingleView = (RecyclerView) findViewById(R.id.rv_main_screen);
 
-        StaggeredGridLayoutManager staggeredGridLayoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager gridLayoutManager =
+                new GridLayoutManager(this, 2);
 
-        mainScreenSingleView.setLayoutManager(staggeredGridLayoutManager);
+        mainScreenSingleView.setLayoutManager(gridLayoutManager);
 
         mainScreenSingleView.setHasFixedSize(true);
 

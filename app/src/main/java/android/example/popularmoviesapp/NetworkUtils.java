@@ -19,7 +19,7 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    private static final String API_KEY = "You need to get your own key";
+    private static final String API_KEY = "You need to define your";
 
     public static final String GET_MOST_POPULAR_MOVIES = "https://api.themoviedb.org/3/movie/popular?api_key=" +
             API_KEY + "&language=en-US&page=1";
@@ -45,7 +45,7 @@ public class NetworkUtils {
         for(int i = 0; i < 20; i++){
             JSONObject movie = movieArray.getJSONObject(i);
             String record = null;
-            String posterUrl = "https://image.tmdb.org/t/p/w500";
+            String posterUrl = "https://image.tmdb.org/t/p/w780";
             String title = null;
             String userRating = null;
             String releaseYear = null;
