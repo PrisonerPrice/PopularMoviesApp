@@ -25,7 +25,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra("my_extra_data");
 
-        String[] data = message.split("^");
+        String[] data = message.split("  ");
         String posterUrl = data[0];
         String title = data[1];
         String userRating = data[2];

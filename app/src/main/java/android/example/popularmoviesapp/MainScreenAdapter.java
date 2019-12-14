@@ -11,18 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.MainScreenViewHolder> {
 
-    private String[] data;
+    private ArrayList<String> data;
 
     private final MyClickListener myClickListener;
 
-    private int length;
 
-    public MainScreenAdapter(String[] data, MyClickListener myClickListener){
+    public MainScreenAdapter(ArrayList<String> data, MyClickListener myClickListener){
         this.myClickListener = myClickListener;
         this.data = data;
-        length = data.length;
     }
 
     class MainScreenViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -49,6 +49,7 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
     @Override
     public MainScreenViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d("I_AM_IN_ADAPTER", "I run faster!");
         Context context = parent.getContext();
         int layoutIdForSingleView = R.layout.main_screen_view_holder;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -62,19 +63,25 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
     @Override
     public void onBindViewHolder(MainScreenViewHolder holder, int position) {
-        String[] temp = data[position].split("  ");
-        String url = temp[0];
-        String title = temp[1];
-        holder.movieTitle.setText(title);
-        Picasso.get().setLoggingEnabled(true);
-        Picasso.get().
-                load(url).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
-                into(holder.moviePoster);
+        if(data != null && data.size() != 0){
+            String[] temp = data.get(position).split("  ");
+            String url = temp[0];
+            String title = temp[1];
+            holder.movieTitle.setText(title);
+            Picasso.get().setLoggingEnabled(true);
+            Picasso.get().
+                    load(url).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                    into(holder.moviePoster);
+        } else{
+            Picasso.get().
+                    load("https://google.com").placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                    into(holder.moviePoster);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return length;
+        return 20;
     }
 
 }

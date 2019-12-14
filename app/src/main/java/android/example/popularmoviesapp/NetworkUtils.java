@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.lang.Object;
+import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -18,7 +19,7 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    private static final String API_KEY = "You should defined your own";
+    private static final String API_KEY = "You need to get your own key";
 
     public static final String GET_MOST_POPULAR_MOVIES = "https://api.themoviedb.org/3/movie/popular?api_key=" +
             API_KEY + "&language=en-US&page=1";
@@ -35,10 +36,10 @@ public class NetworkUtils {
         }
     }
 
-    public static String[] jsonParsing(String jsonString) throws JSONException {
+    public static ArrayList<String> jsonParsing(String jsonString) throws JSONException {
         if (jsonString == null || jsonString.length() == 0) return null;
 
-        String[] data = new String[20];
+        ArrayList<String> data = new ArrayList<>();
         JSONObject root = new JSONObject(jsonString);
         JSONArray movieArray = root.getJSONArray("results");
         for(int i = 0; i < 20; i++){
@@ -59,7 +60,7 @@ public class NetworkUtils {
                      userRating + "  " +
                      releaseYear + "  " +
                      description;
-            data[i] = record;
+            data.add(record);
         }
         return data;
     }
