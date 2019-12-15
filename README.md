@@ -1,5 +1,7 @@
 # Popular Movies App
 
+![Image](6BA8EE8F-72A1-4393-9332-FC06AE3500A0.JPG)
+
 ## Project overview
 
 This project fully utilizes RecyclerView to provide a polished and smooth user experience for the users to explore popular movies sorting by either popularity or user rating. You can also click on the movie posters to read detailed information of the movie.
