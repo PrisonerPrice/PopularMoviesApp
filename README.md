@@ -1,6 +1,6 @@
 # Popular Movies App
 
-![Image](6BA8EE8F-72A1-4393-9332-FC06AE3500A0.JPG)
+![Image](https://raw.githubusercontent.com/PrisonerPrice/PopularMoviesApp/master/Image/6BA8EE8F-72A1-4393-9332-FC06AE3500A0.JPG)
 
 ## Project overview
 
