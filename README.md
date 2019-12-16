@@ -21,6 +21,7 @@ https://square.github.io/picasso/
 My dependencies settings for these two libraries are shown as following:
 
 	implementation 'com.squareup.picasso:picasso:2.71828'
-    	implementation "com.squareup.okhttp3:okhttp:4.2.1"
+	
+	implementation "com.squareup.okhttp3:okhttp:4.2.1"
 
 
