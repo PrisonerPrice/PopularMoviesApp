@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
     public static class MovieDatabaseQuery extends AsyncTask<String, Void, ArrayList<String>> {
 
-        private ArrayList<String> data;
+        private ArrayList<String> data = new ArrayList<>();
 
         @Override
         protected ArrayList<String> doInBackground(String... urls) {
