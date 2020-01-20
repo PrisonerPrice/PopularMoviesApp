@@ -1,4 +1,4 @@
-package android.example.popularmoviesapp;
+package android.example.popularmoviesapp.Networking;
 
 import org.json.JSONArray;
 import org.json.JSONException;

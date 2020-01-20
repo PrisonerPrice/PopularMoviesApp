@@ -1,12 +1,14 @@
-package android.example.popularmoviesapp;
+package android.example.popularmoviesapp.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.example.popularmoviesapp.R;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
@@ -46,7 +48,8 @@ public class DetailActivity extends AppCompatActivity {
 
         moviePoster = (ImageView) findViewById(R.id.detail_iv_poster);
         Picasso.get().
-                load(posterUrl).centerCrop().resize(750, 1200).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                load(posterUrl).networkPolicy(NetworkPolicy.OFFLINE)
+                .centerCrop().resize(375, 600).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(moviePoster);
 
     }
