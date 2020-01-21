@@ -71,8 +71,8 @@
             android:textColor="@color/colorWhite"/>
 
         <ImageButton
-            android:id="@+id/like_btn"
-            android:background="@drawable/ic_favorite_36px"
+            android:id="@+id/favorite_btn"
+            android:background="@drawable/ic_favorite_border_36px"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@id/gd_line_horizontal"

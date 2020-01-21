@@ -20,12 +20,15 @@ public class DetailActivity extends AppCompatActivity {
     private TextView movieTitle;
     private TextView movieUserRating;
     private TextView movieReleaseYear;
+    private ImageButton favoriteButton;
     private TextView movieDesc;
     private TextView movieComments;
     private ImageButton trailerButton1;
     private ImageButton trailerButton2;
     private TextView textViewTrailer1;
     private TextView textViewTrailer2;
+
+    private static boolean isSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,19 @@ public class DetailActivity extends AppCompatActivity {
                 .centerCrop().resize(375, 600).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(moviePoster);
 
+        favoriteButton = (ImageButton) findViewById(R.id.favorite_btn);
+        favoriteButton.setOnClickListener(v -> {
+            if (!isSelected){
+                addToDatabase(message);
+                favoriteButton.setBackgroundResource(R.drawable.ic_favorite_36px);
+                isSelected = true;
+            } else{
+                removeFromDatabase(message);
+                favoriteButton.setBackgroundResource(R.drawable.ic_favorite_border_36px);
+                isSelected = false;
+            }
+        });
+
         movieComments = (TextView) findViewById(R.id.detail_tv_comments);
         movieComments.setText(comment);
 
@@ -92,5 +108,13 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
+    }
+
+    private void addToDatabase(String message){
+
+    }
+
+    private void removeFromDatabase(String message) {
+
     }
 }
