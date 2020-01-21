@@ -115,6 +115,7 @@
             app:layout_constraintLeft_toLeftOf="parent"/>
 
         <TextView
+            android:id="@+id/detail_tv_trailer1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
@@ -136,10 +137,11 @@
             app:layout_constraintLeft_toLeftOf="parent"/>
 
         <TextView
+            android:id="@+id/detail_tv_trailer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="Trailer 1"
+            android:text="Trailer 2"
             app:layout_constraintLeft_toRightOf="@id/detail_btn_trailer2"
             app:layout_constraintTop_toTopOf="@id/detail_btn_trailer2"
             app:layout_constraintBottom_toBottomOf="@id/detail_btn_trailer2"
