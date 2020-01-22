@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -22,9 +20,13 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
     private final MyClickListener myClickListener;
 
 
-    public MainScreenAdapter(ArrayList<String> data, MyClickListener myClickListener){
+    public MainScreenAdapter(MyClickListener myClickListener){
         this.myClickListener = myClickListener;
+    }
+
+    public void setData(ArrayList<String> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     class MainScreenViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -83,7 +85,8 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
     @Override
     public int getItemCount() {
-        return 20;
+        if (data == null) return 0;
+        return data.size();
     }
 
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.example.popularmoviesapp.R;
+import android.example.popularmoviesapp.Repository.DataExchanger;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +28,7 @@ public class DetailActivity extends AppCompatActivity {
     private ImageButton trailerButton2;
     private TextView textViewTrailer1;
     private TextView textViewTrailer2;
+    private static DataExchanger dataExchanger;
 
     private static boolean isSelected = false;
 
@@ -37,6 +39,8 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String message = intent.getStringExtra("my_extra_data");
+
+        dataExchanger = DataExchanger.getInstance();
 
         String[] data = message.split("  ");
         String posterUrl = data[0];
@@ -69,11 +73,11 @@ public class DetailActivity extends AppCompatActivity {
         favoriteButton = (ImageButton) findViewById(R.id.favorite_btn);
         favoriteButton.setOnClickListener(v -> {
             if (!isSelected){
-                addToDatabase(message);
+                dataExchanger.markMovieAsFavorite(message);
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_36px);
                 isSelected = true;
             } else{
-                removeFromDatabase(message);
+                dataExchanger.cancelMovieAsFavorite(message);
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_border_36px);
                 isSelected = false;
             }
@@ -108,13 +112,5 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
-    }
-
-    private void addToDatabase(String message){
-
-    }
-
-    private void removeFromDatabase(String message) {
-
     }
 }

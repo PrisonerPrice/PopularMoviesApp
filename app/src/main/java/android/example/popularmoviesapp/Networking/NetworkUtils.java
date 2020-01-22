@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -16,7 +15,7 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    private static final String API_KEY = "You need to use your own key";
+    private static final String API_KEY = "You need to use your own";
 
     public static final String GET_MOST_POPULAR_MOVIES = "https://api.themoviedb.org/3/movie/popular?api_key=" +
             API_KEY + "&language=en-US&page=1";
