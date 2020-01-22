@@ -1,5 +1,6 @@
 package android.example.popularmoviesapp.Networking;
 
+import android.example.popularmoviesapp.Database.Movie;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -7,7 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -51,15 +55,15 @@ public class NetworkUtils {
         return getResponseFromHttpUrl(url_GET_VIDEOS);
     }
 
-    public static ArrayList<String> jsonParsing(String jsonString) throws JSONException, IOException {
+    public static ArrayList<Movie> jsonParsing(String jsonString, String query) throws JSONException, IOException {
         if (jsonString == null || jsonString.length() == 0) return null;
 
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<Movie> data = new ArrayList<>();
         JSONObject root = new JSONObject(jsonString);
         JSONArray movieArray = root.getJSONArray("results");
+
         for(int i = 0; i < 20; i++){
             JSONObject movie = movieArray.getJSONObject(i);
-            String record = null;
             String posterUrl = "https://image.tmdb.org/t/p/w780";
             String title = null;
             String userRating = null;
@@ -101,14 +105,32 @@ public class NetworkUtils {
                 trailerUrl2 = "Fail to get the URL";
             }
 
-            record = posterUrl + "  "
-                    + title + "  "
-                    + userRating + "  "
-                    + releaseYear + "  "
-                    + description + "  "
-                    + comment + "  "
-                    + trailerUrl1 + "  "
-                    + trailerUrl2;
+            int isPopular = 0;
+            int isHighlyRanked = 0;
+
+            if (query.equals(GET_MOST_POPULAR_MOVIES)){
+                isPopular = 1;
+                isHighlyRanked = 0;
+            }
+
+            if (query.equals(GET_TOP_RATED_MOVIES)){
+                isPopular = 0;
+                isHighlyRanked = 1;
+            }
+
+            Movie record = new Movie(id,
+                    title,
+                    posterUrl,
+                    userRating,
+                    Integer.parseInt(releaseYear),
+                    description,
+                    comment,
+                    trailerUrl1,
+                    trailerUrl2,
+                    0,
+                    isPopular,
+                    isHighlyRanked,
+                    System.currentTimeMillis());
             data.add(record);
         }
         return data;

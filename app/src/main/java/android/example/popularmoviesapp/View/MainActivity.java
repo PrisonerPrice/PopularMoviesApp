@@ -4,20 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
-import android.example.popularmoviesapp.Networking.NetworkUtils;
 import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.ArrayList;
+import com.facebook.stetho.Stetho;
 
 import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
 
@@ -29,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
 
         dataExchanger = new DataExchanger(getApplicationContext(), this);
@@ -50,9 +45,8 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     @Override
     public void onItemClick(int position) {
         Intent detailIntent = new Intent(this, DetailActivity.class);
-        detailIntent.putExtra("my_extra_data", dataExchanger.cacheData.get(position));
+        detailIntent.putExtra("my_extra_data", dataExchanger.cacheData.get(position).encoder());
         startActivity(detailIntent);
-
     }
 
     @Override

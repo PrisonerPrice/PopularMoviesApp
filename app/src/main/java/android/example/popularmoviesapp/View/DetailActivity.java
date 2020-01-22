@@ -3,6 +3,7 @@ package android.example.popularmoviesapp.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.example.popularmoviesapp.Database.Movie;
 import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
 import android.net.Uri;
@@ -39,18 +40,25 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String message = intent.getStringExtra("my_extra_data");
+        Movie movie = Movie.decoder(message);
 
         dataExchanger = DataExchanger.getInstance();
 
-        String[] data = message.split("  ");
-        String posterUrl = data[0];
-        String title = data[1];
-        String userRating = data[2];
-        String releaseYear = data[3];
-        String description = data[4];
-        String comment = data[5];
-        final String url1 = data[6];
-        String url2 = data[7];
+        String posterUrl = movie.getPosterUrl();
+        String title = movie.getTitle();
+        String userRating = movie.getUserRating();
+        String releaseYear = movie.getReleaseYear() + "";
+        String description = movie.getDescription();
+        String comment = movie.getComment();
+        final String url1 = movie.getTrailerUrl1();
+        String url2 = movie.getTrailerUrl2();
+        int isLiked = movie.getIsLiked();
+
+        if (isLiked == 1){
+            isSelected = true;
+        } else{
+            isSelected = false;
+        }
 
         movieTitle = (TextView) findViewById(R.id.detail_tv_original_title);
         movieTitle.setText(title);
@@ -73,11 +81,11 @@ public class DetailActivity extends AppCompatActivity {
         favoriteButton = (ImageButton) findViewById(R.id.favorite_btn);
         favoriteButton.setOnClickListener(v -> {
             if (!isSelected){
-                dataExchanger.markMovieAsFavorite(message);
+                dataExchanger.markMovieAsFavorite(movie.getId());
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_36px);
                 isSelected = true;
             } else{
-                dataExchanger.cancelMovieAsFavorite(message);
+                dataExchanger.cancelMovieAsFavorite(movie.getId());
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_border_36px);
                 isSelected = false;
             }
@@ -105,7 +113,6 @@ public class DetailActivity extends AppCompatActivity {
             textViewTrailer2.setOnClickListener(v -> openUrl(url2));
             trailerButton2.setOnClickListener(v -> openUrl(url2));
         }
-
     }
 
     public void openUrl(String url){

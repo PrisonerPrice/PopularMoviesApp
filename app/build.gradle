@@ -46,4 +46,6 @@ dependencies {
 
     // Add material (old design) dependency
     implementation "com.google.android.material:material:1.0.0"
+
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 }

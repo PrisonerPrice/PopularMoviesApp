@@ -13,6 +13,9 @@ import java.util.List;
 @Dao
 public interface MovieDao {
 
+    @Query("SELECT * FROM movie WHERE id = :id")
+    Movie getMovieById(int id);
+
     @Query("SELECT * FROM movie ORDER BY updated_at")
     LiveData<List<Movie>> getAllMovies();
 
@@ -23,10 +26,7 @@ public interface MovieDao {
     LiveData<List<Movie>> getHighlyRankedMovies();
 
     @Query("SELECT * FROM movie WHERE is_liked = 1")
-    LiveData<List<Movie>> getFavoriteMovies();
-
-    @Query("SELECT * FROM movie WHERE data_string = :data")
-    Movie getMovieByDataString(String data);
+    List<Movie> getFavoriteMovies();
 
     @Insert
     void insertMovie(Movie movie);
@@ -36,7 +36,4 @@ public interface MovieDao {
 
     @Delete
     void deleteMovie(Movie movie);
-
-    @Query("SELECT * FROM movie WHERE id = :id")
-    LiveData<Movie> loadMovieById(int id);
 }

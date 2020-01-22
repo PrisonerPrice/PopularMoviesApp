@@ -1,6 +1,7 @@
 package android.example.popularmoviesapp.View;
 
 import android.content.Context;
+import android.example.popularmoviesapp.Database.Movie;
 import android.example.popularmoviesapp.R;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,16 +16,15 @@ import java.util.ArrayList;
 
 public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.MainScreenViewHolder> {
 
-    private ArrayList<String> data;
+    private ArrayList<Movie> data;
 
     private final MyClickListener myClickListener;
-
 
     public MainScreenAdapter(MyClickListener myClickListener){
         this.myClickListener = myClickListener;
     }
 
-    public void setData(ArrayList<String> data) {
+    public void setData(ArrayList<Movie> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -53,7 +53,6 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
     @Override
     public MainScreenViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("I_AM_IN_ADAPTER", "I run faster!");
         Context context = parent.getContext();
         int layoutIdForSingleView = R.layout.main_screen_view_holder;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -68,9 +67,9 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
     @Override
     public void onBindViewHolder(MainScreenViewHolder holder, int position) {
         if(data != null && data.size() != 0){
-            String[] temp = data.get(position).split("  ");
-            String url = temp[0];
-            String title = temp[1];
+            Movie movie = data.get(position);
+            String url = movie.getPosterUrl();
+            String title = movie.getTitle();
             holder.movieTitle.setText(title);
             Picasso.get().setLoggingEnabled(true);
             Picasso.get().

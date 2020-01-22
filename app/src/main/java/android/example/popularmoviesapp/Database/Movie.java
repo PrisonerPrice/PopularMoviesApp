@@ -10,8 +10,32 @@ import java.util.Date;
 @Entity(tableName = "movie")
 public class Movie {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
+
+    @ColumnInfo
+    private String title;
+
+    @ColumnInfo(name = "poster_url")
+    private String posterUrl;
+
+    @ColumnInfo(name = "user_rating")
+    private String userRating;
+
+    @ColumnInfo(name = "release_year")
+    private int releaseYear;
+
+    @ColumnInfo
+    private String description;
+
+    @ColumnInfo
+    private String comment;
+
+    @ColumnInfo(name = "trailer_url_1")
+    private String trailerUrl1;
+
+    @ColumnInfo(name = "trailer_url_2")
+    private String trailerUrl2;
 
     @ColumnInfo(name = "is_liked")
     private int isLiked;
@@ -22,27 +46,38 @@ public class Movie {
     @ColumnInfo(name = "is_highly_ranked")
     private int isHighlyRanked;
 
-    @ColumnInfo(name = "data_string")
-    private String dataString;
-
     @ColumnInfo(name = "updated_at")
-    private Date updatedAt;
+    private Long updatedAt;
 
     @Ignore
-    public Movie(int isLiked, int isPopular, int isHighlyRanked, String dataString, Date updatedAt) {
+    public Movie(String title, String posterUrl, String userRating, int releaseYear, String description, String comment, String trailerUrl1, String trailerUrl2, int isLiked, int isPopular, int isHighlyRanked, Long updatedAt) {
+        this.title = title;
+        this.posterUrl = posterUrl;
+        this.userRating = userRating;
+        this.releaseYear = releaseYear;
+        this.description = description;
+        this.comment = comment;
+        this.trailerUrl1 = trailerUrl1;
+        this.trailerUrl2 = trailerUrl2;
         this.isLiked = isLiked;
         this.isPopular = isPopular;
         this.isHighlyRanked = isHighlyRanked;
-        this.dataString = dataString;
         this.updatedAt = updatedAt;
     }
 
-    public Movie(int id, int isLiked, int isPopular, int isHighlyRanked, String dataString, Date updatedAt) {
+    public Movie(int id, String title, String posterUrl, String userRating, int releaseYear, String description, String comment, String trailerUrl1, String trailerUrl2, int isLiked, int isPopular, int isHighlyRanked, Long updatedAt) {
         this.id = id;
+        this.title = title;
+        this.posterUrl = posterUrl;
+        this.userRating = userRating;
+        this.releaseYear = releaseYear;
+        this.description = description;
+        this.comment = comment;
+        this.trailerUrl1 = trailerUrl1;
+        this.trailerUrl2 = trailerUrl2;
         this.isLiked = isLiked;
         this.isPopular = isPopular;
         this.isHighlyRanked = isHighlyRanked;
-        this.dataString = dataString;
         this.updatedAt = updatedAt;
     }
 
@@ -52,6 +87,70 @@ public class Movie {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
+    public String getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(String userRating) {
+        this.userRating = userRating;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getTrailerUrl1() {
+        return trailerUrl1;
+    }
+
+    public void setTrailerUrl1(String trailerUrl1) {
+        this.trailerUrl1 = trailerUrl1;
+    }
+
+    public String getTrailerUrl2() {
+        return trailerUrl2;
+    }
+
+    public void setTrailerUrl2(String trailerUrl2) {
+        this.trailerUrl2 = trailerUrl2;
     }
 
     public int getIsLiked() {
@@ -78,19 +177,50 @@ public class Movie {
         this.isHighlyRanked = isHighlyRanked;
     }
 
-    public String getDataString() {
-        return dataString;
-    }
-
-    public void setDataString(String dataString) {
-        this.dataString = dataString;
-    }
-
-    public Date getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String encoder() {
+        String record = null;
+        record = id + "  "
+                + title + "  "
+                + posterUrl + "  "
+                + userRating + "  "
+                + releaseYear + "  "
+                + description + "  "
+                + comment + "  "
+                + trailerUrl1 + "  "
+                + trailerUrl2 + "  "
+                + isLiked + "  "
+                + isPopular + "  "
+                + isHighlyRanked + "  "
+                + updatedAt;
+        return record;
+    }
+
+    public static Movie decoder(String record){
+        String[] data = record.split("  ");
+        if (data == null || data.length < 12) return null;
+        Movie movie = new Movie(
+                Integer.parseInt(data[0]),
+                data[1],
+                data[2],
+                data[3],
+                Integer.parseInt(data[4]),
+                data[5],
+                data[6],
+                data[7],
+                data[8],
+                Integer.parseInt(data[9]),
+                Integer.parseInt(data[10]),
+                Integer.parseInt(data[11]),
+                Long.parseLong(data[12])
+        );
+        return movie;
     }
 }
