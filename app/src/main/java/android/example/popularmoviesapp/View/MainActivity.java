@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     @Override
     public void onItemClick(int position) {
         Intent detailIntent = new Intent(this, DetailActivity.class);
-        detailIntent.putExtra("my_extra_data", dataExchanger.cacheData.get(position).encoder());
+        detailIntent.putExtra("My_Click_Position", position);
         startActivity(detailIntent);
     }
 

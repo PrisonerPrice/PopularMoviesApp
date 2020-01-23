@@ -8,6 +8,7 @@ import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,7 +32,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView textViewTrailer2;
     private static DataExchanger dataExchanger;
 
-    private static boolean isSelected = false;
+    private boolean isSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra("my_extra_data");
-        Movie movie = Movie.decoder(message);
+        int position = intent.getIntExtra("My_Click_Position", -1);
+        Movie movie = dataExchanger.cacheData.get(position);
 
         dataExchanger = DataExchanger.getInstance();
 
@@ -53,12 +54,6 @@ public class DetailActivity extends AppCompatActivity {
         final String url1 = movie.getTrailerUrl1();
         String url2 = movie.getTrailerUrl2();
         int isLiked = movie.getIsLiked();
-
-        if (isLiked == 1){
-            isSelected = true;
-        } else{
-            isSelected = false;
-        }
 
         movieTitle = (TextView) findViewById(R.id.detail_tv_original_title);
         movieTitle.setText(title);
@@ -79,16 +74,29 @@ public class DetailActivity extends AppCompatActivity {
                 into(moviePoster);
 
         favoriteButton = (ImageButton) findViewById(R.id.favorite_btn);
+
+        if (isLiked == 1){
+            isSelected = true;
+            favoriteButton.setBackgroundResource(R.drawable.ic_favorite_36px);
+        } else{
+            isSelected = false;
+            favoriteButton.setBackgroundResource(R.drawable.ic_favorite_border_36px);
+        }
+
         favoriteButton.setOnClickListener(v -> {
+            Log.d("prev state: ", isSelected + "");
             if (!isSelected){
+                dataExchanger.cacheData.get(position).setIsLiked(1);
                 dataExchanger.markMovieAsFavorite(movie.getId());
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_36px);
                 isSelected = true;
             } else{
+                dataExchanger.cacheData.get(position).setIsLiked(0);
                 dataExchanger.cancelMovieAsFavorite(movie.getId());
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_border_36px);
                 isSelected = false;
             }
+            Log.d("curr state: ", isSelected + "");
         });
 
         movieComments = (TextView) findViewById(R.id.detail_tv_comments);

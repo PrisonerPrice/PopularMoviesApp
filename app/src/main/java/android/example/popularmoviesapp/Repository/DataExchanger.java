@@ -167,13 +167,12 @@ public class DataExchanger {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Movie> movies) {
+        protected void onPostExecute(ArrayList<Movie> data) {
             if (cacheData != null && cacheData.size() > 0){
                 cacheData.clear();
             }
-            cacheData.addAll(movies);
+            cacheData.addAll(data);
             mainScreenAdapter.setData(cacheData);
         }
     }
-
 }
