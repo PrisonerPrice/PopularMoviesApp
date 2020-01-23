@@ -34,7 +34,7 @@ public class DataExchanger {
     private static Context context;
     private static MyClickListener listener;
 
-    private final static long EXPIRATION_TIME = 1000 * 3600 * 24; // one day
+    private final static long EXPIRATION_TIME = 1000 * 60; // one minute, for the ease of testing
 
     public DataExchanger(Context context, MyClickListener listener) {
         this.context = context;
@@ -57,10 +57,17 @@ public class DataExchanger {
         movieAPIQuery.execute(query);
     }
 
-    public static void insertRetrievedDataIntoDatabase(ArrayList<Movie> data){
+    public static void insertRetrievedDataIntoDatabase(ArrayList<Movie> movies){
         appExecutors.getDiskIO().execute(() -> {
-            for (Movie m : data) {
-                appDatabase.movieDao().updateMovie(m);
+            for (Movie currMovie : movies) {
+                Movie prevMovie = appDatabase.movieDao().getMovieById(currMovie.getId());
+                if (prevMovie == null) appDatabase.movieDao().insertMovie(currMovie);
+                else{
+                    if (prevMovie.getIsPopular() == 1) currMovie.setIsPopular(1);
+                    if (prevMovie.getIsHighlyRanked() == 1) currMovie.setIsHighlyRanked(1);
+                    if (prevMovie.getIsLiked() == 1) currMovie.setIsLiked(1);
+                    appDatabase.movieDao().updateMovie(currMovie);
+                }
             }
         });
     }

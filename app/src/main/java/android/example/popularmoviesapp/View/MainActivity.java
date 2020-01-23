@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         dataExchanger.dataGenerator(GET_MOST_POPULAR_MOVIES);
 
         mainScreenSingleView = (RecyclerView) findViewById(R.id.rv_main_screen);
+        mainScreenSingleView.setBackgroundResource(R.color.colorPrimaryDark);
 
         GridLayoutManager gridLayoutManager =
                 new GridLayoutManager(this, 2);
@@ -61,10 +62,12 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         int id = item.getItemId();
         if(id == R.id.action_popularity){
             dataExchanger.dataGenerator(GET_MOST_POPULAR_MOVIES);
+            mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
             return true;
         }
         if(id == R.id.action_Rating){
             dataExchanger.dataGenerator(GET_TOP_RATED_MOVIES);
+            mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
             return true;
         }
         if(id == R.id.action_Favorite){
