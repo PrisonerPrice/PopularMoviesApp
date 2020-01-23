@@ -17,15 +17,15 @@ public interface MovieDao {
     Movie getMovieById(int id);
 
     @Query("SELECT * FROM movie ORDER BY updated_at")
-    LiveData<List<Movie>> getAllMovies();
+    List<Movie> getAllMovies();
 
-    @Query("SELECT * FROM movie WHERE is_popular = 1")
-    LiveData<List<Movie>> getPopularMovies();
+    @Query("SELECT * FROM movie WHERE is_popular = 1 ORDER BY updated_at")
+    List<Movie> getPopularMovies();
 
-    @Query("SELECT * FROM movie WHERE is_highly_ranked = 1")
-    LiveData<List<Movie>> getHighlyRankedMovies();
+    @Query("SELECT * FROM movie WHERE is_highly_ranked = 1 ORDER BY updated_at")
+    List<Movie> getHighlyRankedMovies();
 
-    @Query("SELECT * FROM movie WHERE is_liked = 1")
+    @Query("SELECT * FROM movie WHERE is_liked = 1 ORDER BY updated_at DESC")
     List<Movie> getFavoriteMovies();
 
     @Insert

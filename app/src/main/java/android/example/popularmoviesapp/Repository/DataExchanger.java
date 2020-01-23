@@ -34,6 +34,8 @@ public class DataExchanger {
     private static Context context;
     private static MyClickListener listener;
 
+    private final static long EXPIRATION_TIME = 1000 * 3600 * 24; // one day
+
     public DataExchanger(Context context, MyClickListener listener) {
         this.context = context;
         appDatabase = AppDatabase.getInstance(context);
@@ -51,7 +53,7 @@ public class DataExchanger {
     }
 
     public void dataGenerator(String query){
-        MovieAPIQuery movieAPIQuery = new MovieAPIQuery();
+        MovieQuery movieAPIQuery = new MovieQuery();
         movieAPIQuery.execute(query);
     }
 
@@ -80,15 +82,15 @@ public class DataExchanger {
     }
 
     public void showFavoriteMovies(){
-        MovieDatabaseQuery movieDatabaseQuery = new MovieDatabaseQuery();
-        movieDatabaseQuery.execute();
+        MovieQuery movieDatabaseQuery = new MovieQuery();
+        movieDatabaseQuery.execute(GET_FAVORITE_MOVIES);
     }
 
-    public LiveData<List<Movie>> getPopularMovies(){
+    public List<Movie> getPopularMovies(){
         return appDatabase.movieDao().getPopularMovies();
     }
 
-    public LiveData<List<Movie>> getHighlyRankedMovies(){
+    public List<Movie> getHighlyRankedMovies(){
         return appDatabase.movieDao().getHighlyRankedMovies();
     }
 
@@ -96,51 +98,42 @@ public class DataExchanger {
         return appDatabase.movieDao().getFavoriteMovies();
     }
 
-    /*
-    public LiveData<Movie> getMovie(int id){
-        return appDatabase.movieDao().loadMovieById(id);
-    }
 
-    public LiveData<List<Movie>> getMovieList(){
-        return appDatabase.movieDao().loadMovieList();
-    }
+    public static class MovieQuery extends AsyncTask<String, Void, ArrayList<Movie>>{
 
-    public void getMovieDataFromAPI(String jsonString){
-
-    }
-
-    public void insertMovie(Movie movie){
-        appDatabase.movieDao().insertMovie(movie);
-    }
-
-    public void deleteMovie(int id){
-        appExecutors.getDiskIO().execute(() -> {
-            Movie movie = appDatabase.movieDao().loadMovieById(id).getValue();
-            appDatabase.movieDao().deleteMovie(movie);
-        });
-    }
-
-     */
-
-    public static class MovieAPIQuery extends AsyncTask<String, Void, ArrayList<Movie>>{
-
-        private String query;
+        String query;
 
         @Override
         protected ArrayList<Movie> doInBackground(String... urls) {
             query = urls[0];
-            String jsonString = null;
-            ArrayList<Movie> data = null;
-            try{
-                jsonString = getResponseFromHttpUrl(urls[0]);
-                data = jsonParsing(jsonString, urls[0]);
-                for (Movie m : data) Log.d("Parsed_data", m.encoder());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (query.equals(GET_FAVORITE_MOVIES)){
+                List<Movie> movies = appDatabase.movieDao().getFavoriteMovies();
+                ArrayList<Movie> data = new ArrayList<>();
+                for (Movie movie : movies){
+                    Log.d("Loading favorites: ", movie.getTitle());
+                    data.add(movie);
+                }
+                return data;
+            } else {
+                ArrayList<Movie> movies = new ArrayList<>();
+                if (query.equals(GET_MOST_POPULAR_MOVIES)) movies = (ArrayList<Movie>) appDatabase.movieDao().getPopularMovies();
+                if (query.equals(GET_TOP_RATED_MOVIES)) movies = (ArrayList<Movie>) appDatabase.movieDao().getHighlyRankedMovies();
+                if (movies != null && movies.size() > 0 && (System.currentTimeMillis() - movies.get(movies.size() - 1).getUpdatedAt() < EXPIRATION_TIME)) return movies;
+                else {
+                    String jsonString = null;
+                    ArrayList<Movie> data = null;
+                    try{
+                        jsonString = getResponseFromHttpUrl(query);
+                        data = jsonParsing(jsonString, query);
+                        for (Movie m : data) Log.d("Parsed_data", m.encoder());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return data;
+                }
             }
-            return data;
         }
 
         @Override
@@ -150,30 +143,7 @@ public class DataExchanger {
             }
             cacheData.addAll(data);
             mainScreenAdapter.setData(cacheData);
-            DataExchanger.insertRetrievedDataIntoDatabase(data);
-        }
-    }
-
-    public static class MovieDatabaseQuery extends AsyncTask<Void, Void, ArrayList<Movie>>{
-
-        @Override
-        protected ArrayList<Movie> doInBackground(Void... voids) {
-            List<Movie> movies = appDatabase.movieDao().getFavoriteMovies();
-            ArrayList<Movie> data = new ArrayList<>();
-            for (Movie movie : movies){
-                Log.d("Loading favorites: ", movie.getTitle());
-                data.add(movie);
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> data) {
-            if (cacheData != null && cacheData.size() > 0){
-                cacheData.clear();
-            }
-            cacheData.addAll(data);
-            mainScreenAdapter.setData(cacheData);
+            if (!query.equals(GET_FAVORITE_MOVIES)) DataExchanger.insertRetrievedDataIntoDatabase(data);
         }
     }
 }

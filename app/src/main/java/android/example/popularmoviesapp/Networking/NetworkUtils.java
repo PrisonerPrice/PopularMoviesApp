@@ -8,10 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,13 +16,15 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    private static final String API_KEY = "You should use your own";
+    private static final String API_KEY = "You need to use your own";
 
     public static final String GET_MOST_POPULAR_MOVIES = "https://api.themoviedb.org/3/movie/popular?api_key=" +
             API_KEY + "&language=en-US&page=1";
 
     public static final String GET_TOP_RATED_MOVIES = "https://api.themoviedb.org/3/movie/top_rated?api_key=" +
             API_KEY + "&language=en-US&page=1";
+
+    public static final String GET_FAVORITE_MOVIES = "get_favorite_movies";
 
     public static final String GET_VIDEOS = "https://api.themoviedb.org/3/movie/" + " " + "/videos?api_key=" +
             API_KEY;
