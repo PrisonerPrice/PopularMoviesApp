@@ -161,6 +161,7 @@ public class DataExchanger {
             List<Movie> movies = appDatabase.movieDao().getFavoriteMovies();
             ArrayList<Movie> data = new ArrayList<>();
             for (Movie movie : movies){
+                Log.d("Loading favorites: ", movie.getTitle());
                 data.add(movie);
             }
             return data;

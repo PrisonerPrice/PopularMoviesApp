@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         }
         if(id == R.id.action_Favorite){
             dataExchanger.showFavoriteMovies();
+            mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
             return true;
         }
         return super.onOptionsItemSelected(item);

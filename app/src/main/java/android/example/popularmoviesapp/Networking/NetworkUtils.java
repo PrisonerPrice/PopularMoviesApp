@@ -19,7 +19,7 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    private static final String API_KEY = "You need to use your own";
+    private static final String API_KEY = "You should use your own";
 
     public static final String GET_MOST_POPULAR_MOVIES = "https://api.themoviedb.org/3/movie/popular?api_key=" +
             API_KEY + "&language=en-US&page=1";
