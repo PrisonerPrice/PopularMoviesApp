@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
+import android.example.popularmoviesapp.Repository.MainScreenAdapter;
+import android.example.popularmoviesapp.ViewModel.MainScreenViewModel;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
     private static RecyclerView mainScreenSingleView;
     private static DataExchanger dataExchanger;
+    private MainScreenViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
         dataExchanger = new DataExchanger(getApplicationContext(), this);
 
-        dataExchanger.dataGenerator(GET_MOST_POPULAR_MOVIES);
+        viewModel = new MainScreenViewModel(getApplication());
 
         mainScreenSingleView = (RecyclerView) findViewById(R.id.rv_main_screen);
         mainScreenSingleView.setBackgroundResource(R.color.colorPrimaryDark);
@@ -40,6 +43,11 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
         mainScreenSingleView.setHasFixedSize(true);
 
+        setInitView();
+    }
+
+    private void setInitView() {
+        viewModel.setMoviesDataToAdapter(GET_MOST_POPULAR_MOVIES, this);
         mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
     }
 
@@ -61,17 +69,17 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_popularity){
-            dataExchanger.dataGenerator(GET_MOST_POPULAR_MOVIES);
+            viewModel.setMoviesDataToAdapter(GET_MOST_POPULAR_MOVIES, this);
             mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
             return true;
         }
         if(id == R.id.action_Rating){
-            dataExchanger.dataGenerator(GET_TOP_RATED_MOVIES);
+            viewModel.setMoviesDataToAdapter(GET_TOP_RATED_MOVIES, this);
             mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
             return true;
         }
         if(id == R.id.action_Favorite){
-            dataExchanger.showFavoriteMovies();
+            viewModel.setMoviesDataToAdapter(GET_FAVORITE_MOVIES, this);
             mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
             return true;
         }

@@ -1,9 +1,8 @@
-package android.example.popularmoviesapp.View;
+package android.example.popularmoviesapp.Repository;
 
 import android.content.Context;
 import android.example.popularmoviesapp.Database.Movie;
 import android.example.popularmoviesapp.R;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
             holder.movieTitle.setText(title);
             Picasso.get().setLoggingEnabled(true);
             Picasso.get().
-                    load(url).networkPolicy(NetworkPolicy.OFFLINE).centerCrop().resize(750, 1200).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                    load(url).centerCrop().resize(750, 1200).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                     into(holder.moviePoster);
         } else{
             Picasso.get().

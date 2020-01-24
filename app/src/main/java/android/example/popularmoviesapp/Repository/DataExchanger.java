@@ -3,22 +3,21 @@ package android.example.popularmoviesapp.Repository;
 import android.content.Context;
 import android.example.popularmoviesapp.Database.AppDatabase;
 import android.example.popularmoviesapp.Database.Movie;
-import android.example.popularmoviesapp.Networking.NetworkUtils;
-import android.example.popularmoviesapp.View.MainScreenAdapter;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
-import static android.example.popularmoviesapp.View.MainScreenAdapter.*;
+import static android.example.popularmoviesapp.Repository.MainScreenAdapter.*;
 
 public class DataExchanger {
 
@@ -34,7 +33,8 @@ public class DataExchanger {
     private static Context context;
     private static MyClickListener listener;
 
-    private final static long EXPIRATION_TIME = 1000 * 60; // one minute, for the ease of testing
+    private final static long EXPIRATION_TIME = 1000 * 60 * 10; // ten minute, for the ease of testing
+    private final static String TAG = DataExchanger.class.getSimpleName();
 
     public DataExchanger(Context context, MyClickListener listener) {
         this.context = context;
@@ -52,6 +52,19 @@ public class DataExchanger {
         return dataExchanger;
     }
 
+    public void setMoviesDataToAdapter(String query, LifecycleOwner owner){
+        LiveData<List<Movie>> liveMovies = getLiveMovies(query);
+        liveMovies.observe(owner, movies -> {
+            Log.d(TAG, "try fetch data from DB");
+            if (cacheData != null && cacheData.size() > 0) cacheData.clear();
+            cacheData = (ArrayList<Movie>) movies;
+            mainScreenAdapter.setData(cacheData);
+        });
+        Log.d(TAG, "size = 0, fetch data from the web and update DB");
+        dataGenerator(query);
+
+    }
+
     public void dataGenerator(String query){
         MovieQuery movieAPIQuery = new MovieQuery();
         movieAPIQuery.execute(query);
@@ -66,6 +79,7 @@ public class DataExchanger {
                     if (prevMovie.getIsPopular() == 1) currMovie.setIsPopular(1);
                     if (prevMovie.getIsHighlyRanked() == 1) currMovie.setIsHighlyRanked(1);
                     if (prevMovie.getIsLiked() == 1) currMovie.setIsLiked(1);
+                    currMovie.setUpdatedAt(prevMovie.getUpdatedAt());
                     appDatabase.movieDao().updateMovie(currMovie);
                 }
             }
@@ -73,7 +87,7 @@ public class DataExchanger {
     }
 
     public void markMovieAsFavorite(int id){
-        appExecutors.getDiskIO().execute(() ->{
+        appExecutors.getDiskIO().execute(() -> {
             Movie movie = appDatabase.movieDao().getMovieById(id);
             movie.setIsLiked(1);
             appDatabase.movieDao().updateMovie(movie);
@@ -81,7 +95,7 @@ public class DataExchanger {
     }
 
     public void cancelMovieAsFavorite(int id){
-        appExecutors.getDiskIO().execute(() ->{
+        appExecutors.getDiskIO().execute(() -> {
             Movie movie = appDatabase.movieDao().getMovieById(id);
             movie.setIsLiked(0);
             appDatabase.movieDao().updateMovie(movie);
@@ -91,6 +105,22 @@ public class DataExchanger {
     public void showFavoriteMovies(){
         MovieQuery movieDatabaseQuery = new MovieQuery();
         movieDatabaseQuery.execute(GET_FAVORITE_MOVIES);
+    }
+
+    public int getMovieSize(String query){
+        final int[] size = new int[1];
+        appExecutors.getDiskIO().execute(() -> {
+            if (query.equals(GET_MOST_POPULAR_MOVIES)){
+                size[0] = appDatabase.movieDao().getPopularMoviesSize();
+            }
+            if (query.equals(GET_TOP_RATED_MOVIES)){
+                size[0] = appDatabase.movieDao().getHighlyRankedMoviesSize();
+            }
+            if (query.equals(GET_FAVORITE_MOVIES)){
+                size[0] = appDatabase.movieDao().getFavoriteMoviesSize();
+            }
+        });
+        return size[0];
     }
 
     public List<Movie> getPopularMovies(){
@@ -105,52 +135,66 @@ public class DataExchanger {
         return appDatabase.movieDao().getFavoriteMovies();
     }
 
+    private LiveData<List<Movie>> getLiveMovies(String query){
+        if (query.equals(GET_MOST_POPULAR_MOVIES)) return appDatabase.movieDao().getLivePopularMovies();
+        if (query.equals(GET_TOP_RATED_MOVIES)) return appDatabase.movieDao().getLiveHighlyRankedMovies();
+        if (query.equals(GET_FAVORITE_MOVIES)) return appDatabase.movieDao().getLiveFavoriteMovies();
+        return null;
+    }
 
-    public static class MovieQuery extends AsyncTask<String, Void, ArrayList<Movie>>{
+    public static class MovieQuery extends AsyncTask<String, Void, List<Movie>>{
 
         String query;
 
         @Override
-        protected ArrayList<Movie> doInBackground(String... urls) {
+        protected List<Movie> doInBackground(String... urls) {
             query = urls[0];
+            List<Movie> movies = new ArrayList<>();
             if (query.equals(GET_FAVORITE_MOVIES)){
-                List<Movie> movies = appDatabase.movieDao().getFavoriteMovies();
+                movies = dataExchanger.getFavoriteMovies();
                 ArrayList<Movie> data = new ArrayList<>();
                 for (Movie movie : movies){
                     Log.d("Loading favorites: ", movie.getTitle());
                     data.add(movie);
                 }
-                return data;
+                return movies;
             } else {
-                ArrayList<Movie> movies = new ArrayList<>();
-                if (query.equals(GET_MOST_POPULAR_MOVIES)) movies = (ArrayList<Movie>) appDatabase.movieDao().getPopularMovies();
-                if (query.equals(GET_TOP_RATED_MOVIES)) movies = (ArrayList<Movie>) appDatabase.movieDao().getHighlyRankedMovies();
-                if (movies != null && movies.size() > 0 && (System.currentTimeMillis() - movies.get(movies.size() - 1).getUpdatedAt() < EXPIRATION_TIME)) return movies;
-                else {
+                if (query.equals(GET_MOST_POPULAR_MOVIES)) movies = dataExchanger.getPopularMovies();
+                if (query.equals(GET_TOP_RATED_MOVIES)) movies = dataExchanger.getHighlyRankedMovies();
+                if (movies != null && movies.size() > 0
+                        && System.currentTimeMillis() - movies.get(movies.size() - 1).getUpdatedAt() < EXPIRATION_TIME){
+                    return movies;
+                } else {
                     String jsonString = null;
-                    ArrayList<Movie> data = null;
                     try{
                         jsonString = getResponseFromHttpUrl(query);
-                        data = jsonParsing(jsonString, query);
-                        for (Movie m : data) Log.d("Parsed_data", m.encoder());
+                        movies = jsonParsing(jsonString, query);
+                        for (Movie m : movies) Log.d("Parsed_data", m.encoder());
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    return data;
+                    insertRetrievedDataIntoDatabase((ArrayList<Movie>) movies);
+                    return movies;
                 }
             }
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Movie> data){
+        protected void onPostExecute(List<Movie> movies){
             if (cacheData != null && cacheData.size() > 0){
                 cacheData.clear();
             }
-            cacheData.addAll(data);
+            cacheData.addAll(movies);
             mainScreenAdapter.setData(cacheData);
-            if (!query.equals(GET_FAVORITE_MOVIES)) DataExchanger.insertRetrievedDataIntoDatabase(data);
+            if (!query.equals(GET_FAVORITE_MOVIES)) DataExchanger.insertRetrievedDataIntoDatabase((ArrayList<Movie>) movies);
         }
     }
 }
+
+
+
+
+
+

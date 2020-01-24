@@ -28,6 +28,24 @@ public interface MovieDao {
     @Query("SELECT * FROM movie WHERE is_liked = 1 ORDER BY updated_at DESC")
     List<Movie> getFavoriteMovies();
 
+    @Query("SELECT * FROM movie WHERE is_popular = 1 ORDER BY updated_at")
+    LiveData<List<Movie>> getLivePopularMovies();
+
+    @Query("SELECT * FROM movie WHERE is_highly_ranked = 1 ORDER BY updated_at")
+    LiveData<List<Movie>> getLiveHighlyRankedMovies();
+
+    @Query("SELECT * FROM movie WHERE is_liked = 1 ORDER BY updated_at DESC")
+    LiveData<List<Movie>> getLiveFavoriteMovies();
+
+    @Query("SELECT COUNT (*) FROM movie WHERE is_popular = 1")
+    int getPopularMoviesSize();
+
+    @Query("SELECT COUNT (*) FROM movie WHERE is_highly_ranked = 1")
+    int getHighlyRankedMoviesSize();
+
+    @Query("SELECT COUNT (*) FROM movie WHERE is_liked = 1")
+    int getFavoriteMoviesSize();
+
     @Insert
     void insertMovie(Movie movie);
 

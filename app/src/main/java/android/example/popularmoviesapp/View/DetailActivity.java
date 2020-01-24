@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
 
         moviePoster = (ImageView) findViewById(R.id.detail_iv_poster);
         Picasso.get().
-                load(posterUrl).networkPolicy(NetworkPolicy.OFFLINE)
+                load(posterUrl)
                 .centerCrop().resize(375, 600).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                 into(moviePoster);
 
