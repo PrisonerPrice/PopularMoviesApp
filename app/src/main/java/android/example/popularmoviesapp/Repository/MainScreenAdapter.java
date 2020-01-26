@@ -71,7 +71,7 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
             String url = movie.getPosterUrl();
             String title = movie.getTitle();
             holder.movieTitle.setText(title);
-            Picasso.get().setLoggingEnabled(true);
+            Picasso.get().setLoggingEnabled(false);
             Picasso.get().
                     load(url).centerCrop().resize(750, 1200).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                     into(holder.moviePoster);

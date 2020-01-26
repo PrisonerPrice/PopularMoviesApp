@@ -9,6 +9,7 @@ import android.example.popularmoviesapp.Repository.DataExchanger;
 import android.example.popularmoviesapp.Repository.MainScreenAdapter;
 import android.example.popularmoviesapp.ViewModel.MainScreenViewModel;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +22,8 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
     private static RecyclerView mainScreenSingleView;
     private static DataExchanger dataExchanger;
-    private MainScreenViewModel viewModel;
+    private static MainScreenViewModel viewModel;
+    private static String query = GET_MOST_POPULAR_MOVIES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,24 +33,25 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
         dataExchanger = new DataExchanger(getApplicationContext(), this);
 
-        viewModel = new MainScreenViewModel(getApplication());
+        viewModel = MainScreenViewModel.getInstance(getApplication());
 
         mainScreenSingleView = (RecyclerView) findViewById(R.id.rv_main_screen);
         mainScreenSingleView.setBackgroundResource(R.color.colorPrimaryDark);
 
-        GridLayoutManager gridLayoutManager =
-                new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
 
         mainScreenSingleView.setLayoutManager(gridLayoutManager);
 
         mainScreenSingleView.setHasFixedSize(true);
 
-        setInitView();
+        //setView(query);
+        viewModel.setMoviesDataToAdapter2(query, this);
+        mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
     }
 
-    private void setInitView() {
-        viewModel.setMoviesDataToAdapter(GET_MOST_POPULAR_MOVIES, this);
-        mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
+    private void setView(String query) {
+        viewModel.setMoviesDataToAdapter2(query, this);
+        //mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
     }
 
     @Override
@@ -69,19 +72,22 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_popularity){
-            viewModel.setMoviesDataToAdapter(GET_MOST_POPULAR_MOVIES, this);
-            mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
+            query = GET_MOST_POPULAR_MOVIES;
+            setView(GET_MOST_POPULAR_MOVIES);
             return true;
         }
         if(id == R.id.action_Rating){
-            viewModel.setMoviesDataToAdapter(GET_TOP_RATED_MOVIES, this);
-            mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
+            query = GET_TOP_RATED_MOVIES;
+            setView(GET_TOP_RATED_MOVIES);
             return true;
         }
         if(id == R.id.action_Favorite){
-            viewModel.setMoviesDataToAdapter(GET_FAVORITE_MOVIES, this);
-            mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
+            query = GET_FAVORITE_MOVIES;
+            setView(GET_FAVORITE_MOVIES);
             return true;
+        }
+        if (id == R.id.action_Clear_cache){
+
         }
         return super.onOptionsItemSelected(item);
     }
