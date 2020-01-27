@@ -17,10 +17,9 @@ import android.view.MenuItem;
 
 import com.facebook.stetho.Stetho;
 
-import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
-import static android.example.popularmoviesapp.Repository.MainScreenAdapter.*;
+import static android.example.popularmoviesapp.Utils.ConstantVars.*;
 
-public class MainActivity extends AppCompatActivity implements MyClickListener {
+public class MainActivity extends AppCompatActivity implements MainScreenAdapter.MyClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static RecyclerView mainScreenSingleView;
@@ -49,21 +48,18 @@ public class MainActivity extends AppCompatActivity implements MyClickListener {
 
         mainScreenSingleView.setHasFixedSize(true);
 
-        //setView(query);
-        viewModel.setMoviesDataToAdapter2(query, this);
+        setView(query);
         mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
     }
 
     private void setView(String query) {
         viewModel.setMoviesDataToAdapter2(query, this);
-        //mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
     }
 
     @Override
     public void onItemClick(int position) {
         Intent detailIntent = new Intent(this, DetailActivity.class);
         DetailScreenViewModel.getInstance(getApplication()).setMovie(position);
-        //detailIntent.putExtra("My_Click_Position", position);
         startActivity(detailIntent);
     }
 

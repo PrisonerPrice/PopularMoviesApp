@@ -37,10 +37,6 @@ public class DetailScreenViewModel extends AndroidViewModel {
         this.state = dataExchanger.mainScreenAdapter.getCurrState();
     }
 
-    public void setState(int state) {
-        this.state = state;
-    }
-
     public Movie getMovie() {
         return movie;
     }

@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.example.popularmoviesapp.Database.Movie;
 import android.example.popularmoviesapp.R;
-import android.example.popularmoviesapp.Repository.DataExchanger;
 import android.example.popularmoviesapp.ViewModel.DetailScreenViewModel;
-import android.example.popularmoviesapp.Networking.NetworkUtils;
 import android.example.popularmoviesapp.ViewModel.MainScreenViewModel;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,17 +15,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-
-import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
 
 public class DetailActivity extends AppCompatActivity {
 
     private final static String TAG = DetailActivity.class.getSimpleName();
-    public final static int STATE_POP = 42;
-    public final static int STATE_HIGH = 41;
-    public final static int STATE_FAV = 40;
 
     private ImageView moviePoster;
     private TextView movieTitle;
@@ -50,13 +42,6 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        /*
-        Intent intent = getIntent();
-        int position = intent.getIntExtra("My_Click_Position", -1);
-        Movie movie = dataExchanger.mainScreenAdapter.getDetailMovie(position);
-
-         */
 
         detailScreenViewModel = DetailScreenViewModel.getInstance(getApplication());
 

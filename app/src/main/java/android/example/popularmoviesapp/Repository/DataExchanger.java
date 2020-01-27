@@ -6,7 +6,6 @@ import android.example.popularmoviesapp.Database.Movie;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 
 import org.json.JSONException;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
 import static android.example.popularmoviesapp.Repository.MainScreenAdapter.*;
+import static android.example.popularmoviesapp.Utils.ConstantVars.*;
 
 public class DataExchanger {
 
@@ -53,22 +53,19 @@ public class DataExchanger {
         mainScreenAdapter.setData((ArrayList<Movie>) movies);
     }
 
-    public void setLiveMoviesDataToAdapter(String query, LifecycleOwner owner){
-        LiveData<List<Movie>> liveMovies = getLiveMovies(query);
-        liveMovies.observe(owner, movies -> {
-            Log.d(TAG, "try fetch data from DB");
-            if (cacheData != null && cacheData.size() > 0) cacheData.clear();
-            cacheData = (ArrayList<Movie>) movies;
-            mainScreenAdapter.setData(cacheData);
-        });
-        Log.d(TAG, "size = 0, fetch data from the web and update DB");
-        fetchDataFromTheWeb();
+    public void setAdapterState(int state){
+        mainScreenAdapter.setCurrState(state);
     }
 
     public void fetchDataFromTheWeb(){
         Log.i(TAG, "<<<<<" + "You are fetching data from the web");
         MovieQuery movieAPIQuery = new MovieQuery();
         movieAPIQuery.execute();
+    }
+
+    public LiveData<List<Movie>> getLiveMovies(){
+        fetchDataFromTheWeb();
+        return appDatabase.movieDao().getAllMovies();
     }
 
     public static void insertRetrievedDataIntoDatabase(ArrayList<Movie> movies){
@@ -92,83 +89,10 @@ public class DataExchanger {
         });
     }
 
-    /*
-    public void markMovieAsFavorite(int id){
-        appExecutors.getDiskIO().execute(() -> {
-            Movie movie = appDatabase.movieDao().getMovieById(id);
-            movie.setIsLiked(1);
-            appDatabase.movieDao().updateMovie(movie);
-        });
-    }
-
-    public void cancelMovieAsFavorite(int id){
-        appExecutors.getDiskIO().execute(() -> {
-            Movie movie = appDatabase.movieDao().getMovieById(id);
-            movie.setIsLiked(0);
-            appDatabase.movieDao().updateMovie(movie);
-        });
-    }
-
-     */
-
-    public void showFavoriteMovies(){
-        MovieQuery movieDatabaseQuery = new MovieQuery();
-        movieDatabaseQuery.execute(GET_FAVORITE_MOVIES);
-    }
-
     public void deleteAllData(){
         appExecutors.getDiskIO().execute(() -> {
             appDatabase.movieDao().deleteMovie();
         });
-    }
-
-    public List<Movie> getPopularMovies(){
-        final ArrayList<Movie> movies = new ArrayList<>();
-        appExecutors.getDiskIO().execute(() -> {
-            movies.addAll(appDatabase.movieDao().getPopularMovies());
-        });
-        return movies;
-    }
-
-    public List<Movie> getHighlyRankedMovies(){
-        final ArrayList<Movie> movies = new ArrayList<>();
-        appExecutors.getDiskIO().execute(() -> {
-            movies.addAll(appDatabase.movieDao().getHighlyRankedMovies());
-        });
-        return movies;
-    }
-
-    public List<Movie> getFavoriteMovies(){
-        final ArrayList<Movie> movies = new ArrayList<>();
-        appExecutors.getDiskIO().execute(() -> {
-            movies.addAll(appDatabase.movieDao().getFavoriteMovies());
-        });
-        return movies;
-    }
-
-    public LiveData<List<Movie>> getLiveMovies(String query){
-        if (query.equals(GET_MOST_POPULAR_MOVIES)) {
-            fetchDataFromTheWeb();
-            return appDatabase.movieDao().getLivePopularMovies();
-        }
-        if (query.equals(GET_TOP_RATED_MOVIES)) {
-            fetchDataFromTheWeb();
-            return appDatabase.movieDao().getLiveHighlyRankedMovies();
-        }
-        if (query.equals(GET_FAVORITE_MOVIES)) {
-            fetchDataFromTheWeb();
-            return appDatabase.movieDao().getLiveFavoriteMovies();
-        }
-        return null;
-    }
-
-    public void setAdapterState(int state){
-        mainScreenAdapter.setCurrState(state);
-    }
-
-    public LiveData<List<Movie>> getLiveMovies(){
-        fetchDataFromTheWeb();
-        return appDatabase.movieDao().getAllMovies();
     }
 
     public static class MovieQuery extends AsyncTask<String, Void, List<Movie>>{

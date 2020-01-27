@@ -14,15 +14,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static android.example.popularmoviesapp.Utils.ConstantVars.*;
+
 public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.MainScreenViewHolder> {
 
     private ArrayList<Movie> data;
 
     private final MyClickListener myClickListener;
 
-    public final static int STATE_POP = 42;
-    public final static int STATE_HIGH = 41;
-    public final static int STATE_FAV = 40;
     private int currState = STATE_POP;
 
     public MainScreenAdapter(MyClickListener myClickListener){

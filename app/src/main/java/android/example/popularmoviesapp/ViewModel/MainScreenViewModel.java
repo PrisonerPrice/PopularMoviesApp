@@ -1,38 +1,26 @@
 package android.example.popularmoviesapp.ViewModel;
 
 import android.app.Application;
-import android.content.Context;
 import android.example.popularmoviesapp.Database.Movie;
-import android.example.popularmoviesapp.Networking.NetworkUtils;
-import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
-import android.example.popularmoviesapp.Repository.MainScreenAdapter;
-import android.example.popularmoviesapp.View.MainActivity;
-import android.nfc.Tag;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
+import static android.example.popularmoviesapp.Utils.ConstantVars.*;
 
 public class MainScreenViewModel extends AndroidViewModel {
-
-    public final static int STATE_POP = 42;
-    public final static int STATE_HIGH = 41;
-    public final static int STATE_FAV = 40;
 
     private static MainScreenViewModel mainScreenViewModel;
     private static final DataExchanger dataExchanger = DataExchanger.getInstance();
     private static final String TAG = MainScreenViewModel.class.getSimpleName();
-    private final static long EXPIRATION_TIME = 1000L * 60 * 2; // 2 minutes, for the ease of testing
 
     private List<Movie> cachePopularMovies = new ArrayList<>();
     private List<Movie> cacheHighlyRatedMovies = new ArrayList<>();
