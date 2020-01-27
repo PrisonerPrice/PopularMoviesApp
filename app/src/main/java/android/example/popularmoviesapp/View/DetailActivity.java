@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.example.popularmoviesapp.Database.Movie;
 import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
+import android.example.popularmoviesapp.ViewModel.DetailScreenViewModel;
+import android.example.popularmoviesapp.Networking.NetworkUtils;
+import android.example.popularmoviesapp.ViewModel.MainScreenViewModel;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +20,14 @@ import android.widget.TextView;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
+
 public class DetailActivity extends AppCompatActivity {
+
+    private final static String TAG = DetailActivity.class.getSimpleName();
+    public final static int STATE_POP = 42;
+    public final static int STATE_HIGH = 41;
+    public final static int STATE_FAV = 40;
 
     private ImageView moviePoster;
     private TextView movieTitle;
@@ -30,7 +40,9 @@ public class DetailActivity extends AppCompatActivity {
     private ImageButton trailerButton2;
     private TextView textViewTrailer1;
     private TextView textViewTrailer2;
-    private static DataExchanger dataExchanger;
+    private static DetailScreenViewModel detailScreenViewModel;
+    private Movie movie;
+    private int state;
 
     private boolean isSelected = false;
 
@@ -39,11 +51,19 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        /*
         Intent intent = getIntent();
         int position = intent.getIntExtra("My_Click_Position", -1);
-        Movie movie = dataExchanger.cacheData.get(position);
+        Movie movie = dataExchanger.mainScreenAdapter.getDetailMovie(position);
 
-        dataExchanger = DataExchanger.getInstance();
+         */
+
+        detailScreenViewModel = DetailScreenViewModel.getInstance(getApplication());
+
+        movie = detailScreenViewModel.getMovie();
+        state = detailScreenViewModel.getState();
+
+        Log.i(TAG, "<<<<<" + "Current state is: " + state);
 
         String posterUrl = movie.getPosterUrl();
         String title = movie.getTitle();
@@ -86,13 +106,9 @@ public class DetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(v -> {
             Log.d("prev state: ", isSelected + "");
             if (!isSelected){
-                dataExchanger.cacheData.get(position).setIsLiked(1);
-                dataExchanger.markMovieAsFavorite(movie.getId());
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_36px);
                 isSelected = true;
             } else{
-                dataExchanger.cacheData.get(position).setIsLiked(0);
-                dataExchanger.cancelMovieAsFavorite(movie.getId());
                 favoriteButton.setBackgroundResource(R.drawable.ic_favorite_border_36px);
                 isSelected = false;
             }
@@ -127,5 +143,15 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isSelected) movie.setIsLiked(1);
+        if (!isSelected) movie.setIsLiked(0);
+        detailScreenViewModel.setBackInformation(movie);
+        Log.i(TAG, "  <-  " + "Curr state is: " + state);
+        MainScreenViewModel.getInstance(getApplication()).setMoviesDataToAdapter(state);
+        finish();
     }
 }

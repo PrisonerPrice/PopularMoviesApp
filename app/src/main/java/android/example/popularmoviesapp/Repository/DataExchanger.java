@@ -20,20 +20,18 @@ import static android.example.popularmoviesapp.Repository.MainScreenAdapter.*;
 
 public class DataExchanger {
 
+    private final static String TAG = DataExchanger.class.getSimpleName();
+
     private static final Object LOCK = new Object();
     private static AppDatabase appDatabase;
     private static final AppExecutors appExecutors = AppExecutors.getInstance();
     private static DataExchanger dataExchanger;
-    private static int DEFAULT_MOVIE_ID = -1;
 
     public static ArrayList<Movie> cacheData = new ArrayList<>();
     public static MainScreenAdapter mainScreenAdapter;
 
     private static Context context;
     private static MyClickListener listener;
-
-    private final static long EXPIRATION_TIME = 1000 * 60 * 100; // ten minute, for the ease of testing
-    private final static String TAG = DataExchanger.class.getSimpleName();
 
     public DataExchanger(Context context, MyClickListener listener) {
         this.context = context;
@@ -64,13 +62,13 @@ public class DataExchanger {
             mainScreenAdapter.setData(cacheData);
         });
         Log.d(TAG, "size = 0, fetch data from the web and update DB");
-        dataGenerator(query);
+        fetchDataFromTheWeb();
     }
 
-    public void dataGenerator(String query){
-        Log.i(TAG, "<<<<<You are now in dataGenerator");
+    public void fetchDataFromTheWeb(){
+        Log.i(TAG, "<<<<<" + "You are fetching data from the web");
         MovieQuery movieAPIQuery = new MovieQuery();
-        movieAPIQuery.execute(query);
+        movieAPIQuery.execute();
     }
 
     public static void insertRetrievedDataIntoDatabase(ArrayList<Movie> movies){
@@ -88,6 +86,13 @@ public class DataExchanger {
         });
     }
 
+    public void updateMovieFavorite(Movie movie){
+        appExecutors.getDiskIO().execute(() -> {
+            appDatabase.movieDao().updateMovie(movie);
+        });
+    }
+
+    /*
     public void markMovieAsFavorite(int id){
         appExecutors.getDiskIO().execute(() -> {
             Movie movie = appDatabase.movieDao().getMovieById(id);
@@ -104,39 +109,16 @@ public class DataExchanger {
         });
     }
 
+     */
+
     public void showFavoriteMovies(){
         MovieQuery movieDatabaseQuery = new MovieQuery();
         movieDatabaseQuery.execute(GET_FAVORITE_MOVIES);
     }
 
-    public boolean moviesIsEmpty(String query){
-        final boolean[] isEmpty = new boolean[1];
+    public void deleteAllData(){
         appExecutors.getDiskIO().execute(() -> {
-            if (query.equals(GET_MOST_POPULAR_MOVIES)){
-                int size = appDatabase.movieDao().getPopularMoviesSize();
-                if (size > 0) isEmpty[0] = false;
-                else  isEmpty[0] = true;
-            }
-            if (query.equals(GET_TOP_RATED_MOVIES)){
-                int size = appDatabase.movieDao().getHighlyRankedMoviesSize();
-                if (size > 0) isEmpty[0] = false;
-                else  isEmpty[0] = true;
-            }
-            if (query.equals(GET_FAVORITE_MOVIES)){
-                int size = appDatabase.movieDao().getFavoriteMoviesSize();
-                if (size > 0) isEmpty[0] = false;
-                else  isEmpty[0] = true;
-            }
-            isEmpty[0] = false;
-        });
-        return isEmpty[0];
-    }
-
-    public void deleteAllData(List<Movie> movies){
-        appExecutors.getDiskIO().execute(() -> {
-            for (Movie movie : movies){
-                appDatabase.movieDao().deleteMovie(movie);
-            }
+            appDatabase.movieDao().deleteMovie();
         });
     }
 
@@ -166,68 +148,65 @@ public class DataExchanger {
 
     public LiveData<List<Movie>> getLiveMovies(String query){
         if (query.equals(GET_MOST_POPULAR_MOVIES)) {
-            dataGenerator(query);
+            fetchDataFromTheWeb();
             return appDatabase.movieDao().getLivePopularMovies();
         }
         if (query.equals(GET_TOP_RATED_MOVIES)) {
-            dataGenerator(query);
+            fetchDataFromTheWeb();
             return appDatabase.movieDao().getLiveHighlyRankedMovies();
         }
         if (query.equals(GET_FAVORITE_MOVIES)) {
-            dataGenerator(query);
+            fetchDataFromTheWeb();
             return appDatabase.movieDao().getLiveFavoriteMovies();
         }
         return null;
     }
 
+    public void setAdapterState(int state){
+        mainScreenAdapter.setCurrState(state);
+    }
+
     public LiveData<List<Movie>> getLiveMovies(){
+        fetchDataFromTheWeb();
         return appDatabase.movieDao().getAllMovies();
     }
 
     public static class MovieQuery extends AsyncTask<String, Void, List<Movie>>{
 
-        String query;
-
         @Override
         protected List<Movie> doInBackground(String... urls) {
-            query = urls[0];
             List<Movie> movies = new ArrayList<>();
-            if (query.equals(GET_FAVORITE_MOVIES)){
-                movies = dataExchanger.getFavoriteMovies();
-                ArrayList<Movie> data = new ArrayList<>();
-                for (Movie movie : movies){
-                    Log.d("Loading favorites: ", movie.getTitle());
-                    data.add(movie);
-                }
-                return movies;
-            } else {
-                if (query.equals(GET_MOST_POPULAR_MOVIES)) movies = appDatabase.movieDao().getPopularMovies();
-                if (query.equals(GET_TOP_RATED_MOVIES)) movies = appDatabase.movieDao().getHighlyRankedMovies();
-                if (movies != null && movies.size() > 0
-                        && System.currentTimeMillis() - movies.get(movies.size() - 1).getUpdatedAt() < EXPIRATION_TIME){
-                    return movies;
-                } else {
-                    String jsonString = null;
-                    try{
-                        jsonString = getResponseFromHttpUrl(query);
-                        movies = jsonParsing(jsonString, query);
-                        for (Movie m : movies) Log.d("Parsed_data", m.encoder());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    return movies;
-                }
-            }
+            movies.addAll(fetchData(GET_MOST_POPULAR_MOVIES));
+            movies.addAll(fetchData(GET_TOP_RATED_MOVIES));
+            return movies;
         }
 
         @Override
         protected void onPostExecute(List<Movie> movies){
-            mainScreenAdapter.setData((ArrayList<Movie>) movies);
-            if (!query.equals(GET_FAVORITE_MOVIES)) {
-                DataExchanger.insertRetrievedDataIntoDatabase((ArrayList<Movie>) movies);
+
+            // Setup default view -- popular movies
+            ArrayList<Movie> defaultMovies = new ArrayList<>();
+            for (Movie movie : movies){
+                if (movie.getIsPopular() == 1) defaultMovies.add(movie);
             }
+            mainScreenAdapter.setData(defaultMovies);
+
+            DataExchanger.insertRetrievedDataIntoDatabase((ArrayList<Movie>) movies);
+        }
+
+        private List<Movie> fetchData(String query){
+            List<Movie> movies = new ArrayList<>();
+            String jsonString = null;
+            try{
+                jsonString = getResponseFromHttpUrl(query);
+                movies = jsonParsing(jsonString, query);
+                for (Movie m : movies) Log.d(TAG, "<<<<<" + m.encoder());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return movies;
         }
     }
 }

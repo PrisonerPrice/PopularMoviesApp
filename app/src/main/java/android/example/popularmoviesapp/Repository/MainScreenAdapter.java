@@ -20,13 +20,46 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
 
     private final MyClickListener myClickListener;
 
+    public final static int STATE_POP = 42;
+    public final static int STATE_HIGH = 41;
+    public final static int STATE_FAV = 40;
+    private int currState = STATE_POP;
+
     public MainScreenAdapter(MyClickListener myClickListener){
         this.myClickListener = myClickListener;
+    }
+
+    public void setCurrState(int currState) {
+        this.currState = currState;
     }
 
     public void setData(ArrayList<Movie> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public Movie getDetailMovie(int position) {
+        if (data == null) return null;
+        else return data.get(position);
+    }
+
+    public void setMovieFavorite(int position, Movie movie){
+        if (data == null) return;
+        if (currState == STATE_HIGH || currState == STATE_POP) {
+            data.get(position).setIsLiked(movie.getIsLiked());
+            notifyItemChanged(position);
+        }
+        if (currState == STATE_FAV) {
+            Movie prevMovie = data.get(position);
+            if (movie.getIsLiked() == 0){
+                data.remove(prevMovie);
+            }
+            notifyDataSetChanged();
+        }
+    }
+
+    public int getCurrState() {
+        return currState;
     }
 
     class MainScreenViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

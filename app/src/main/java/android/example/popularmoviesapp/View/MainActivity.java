@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.example.popularmoviesapp.R;
 import android.example.popularmoviesapp.Repository.DataExchanger;
 import android.example.popularmoviesapp.Repository.MainScreenAdapter;
+import android.example.popularmoviesapp.ViewModel.DetailScreenViewModel;
 import android.example.popularmoviesapp.ViewModel.MainScreenViewModel;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +18,11 @@ import android.view.MenuItem;
 import com.facebook.stetho.Stetho;
 
 import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
+import static android.example.popularmoviesapp.Repository.MainScreenAdapter.*;
 
-public class MainActivity extends AppCompatActivity implements MainScreenAdapter.MyClickListener {
+public class MainActivity extends AppCompatActivity implements MyClickListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static RecyclerView mainScreenSingleView;
     private static DataExchanger dataExchanger;
     private static MainScreenViewModel viewModel;
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         super.onCreate(savedInstanceState);
         Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
+
+        Log.i(TAG, "<<<<<" + "onCreate() is called");
 
         dataExchanger = new DataExchanger(getApplicationContext(), this);
 
@@ -57,7 +62,8 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     @Override
     public void onItemClick(int position) {
         Intent detailIntent = new Intent(this, DetailActivity.class);
-        detailIntent.putExtra("My_Click_Position", position);
+        DetailScreenViewModel.getInstance(getApplication()).setMovie(position);
+        //detailIntent.putExtra("My_Click_Position", position);
         startActivity(detailIntent);
     }
 
@@ -74,20 +80,23 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         if(id == R.id.action_popularity){
             query = GET_MOST_POPULAR_MOVIES;
             setView(GET_MOST_POPULAR_MOVIES);
+            dataExchanger.setAdapterState(STATE_POP);
             return true;
         }
         if(id == R.id.action_Rating){
             query = GET_TOP_RATED_MOVIES;
             setView(GET_TOP_RATED_MOVIES);
+            dataExchanger.setAdapterState(STATE_HIGH);
             return true;
         }
         if(id == R.id.action_Favorite){
             query = GET_FAVORITE_MOVIES;
             setView(GET_FAVORITE_MOVIES);
+            dataExchanger.setAdapterState(STATE_FAV);
             return true;
         }
         if (id == R.id.action_Clear_cache){
-
+            viewModel.deleteAllMovies();
         }
         return super.onOptionsItemSelected(item);
     }

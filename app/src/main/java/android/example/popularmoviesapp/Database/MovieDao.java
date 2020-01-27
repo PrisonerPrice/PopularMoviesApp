@@ -52,6 +52,7 @@ public interface MovieDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateMovie(Movie movie);
 
-    @Delete
-    void deleteMovie(Movie movie);
+    @Query("DELETE FROM movie")
+    void deleteMovie();
+
 }
