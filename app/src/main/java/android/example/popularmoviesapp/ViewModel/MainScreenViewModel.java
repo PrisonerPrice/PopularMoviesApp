@@ -3,7 +3,9 @@ package android.example.popularmoviesapp.ViewModel;
 import android.app.Application;
 import android.example.popularmoviesapp.Database.Movie;
 import android.example.popularmoviesapp.Repository.DataExchanger;
+import android.example.popularmoviesapp.View.MainActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -39,13 +41,11 @@ public class MainScreenViewModel extends AndroidViewModel {
 
     public void setMoviesDataToAdapter2(String query, LifecycleOwner owner) {
         if (cacheMovies.size() == 0 || (System.currentTimeMillis() - cacheMovies.get(0).getUpdatedAt()) > EXPIRATION_TIME) {
+            if (cacheMovies.size() == 0) MainActivity.letProgressBarCome();
             Log.i(TAG, ">>>>>" + "Fetching data...");
-            LiveData<List<Movie>> liveMovies = dataExchanger.getLiveMovies();
+            Toast.makeText(getApplication(), "Fetching Data...", Toast.LENGTH_LONG).show();
+            LiveData<List<Movie>> liveMovies = dataExchanger.getLiveMovies(query);
             liveMovies.observe(owner, movies -> {
-                Log.i(TAG, ">>>>>" + "Data changes and the query is: " + query);
-                Log.i(TAG, "<<<<<" + "Size of PopMovies: " + cachePopularMovies.size());
-                Log.i(TAG, "<<<<<" + "Size of TopMovies: " + cacheHighlyRatedMovies.size());
-                Log.i(TAG, "<<<<<" + "Size of FavMovies: " + cacheFavoriteMovies.size());
                 cacheMovies.clear();
                 cachePopularMovies.clear();
                 cacheHighlyRatedMovies.clear();
@@ -60,6 +60,10 @@ public class MainScreenViewModel extends AndroidViewModel {
             });
         } else {
             Log.i(TAG, "<<<<<" + "No need to fetch data");
+            Log.i(TAG, ">>>>>" + "Data changes and the query is: " + query);
+            Log.i(TAG, "<<<<<" + "Size of PopMovies: " + cachePopularMovies.size());
+            Log.i(TAG, "<<<<<" + "Size of TopMovies: " + cacheHighlyRatedMovies.size());
+            Log.i(TAG, "<<<<<" + "Size of FavMovies: " + cacheFavoriteMovies.size());
         }
         setMoviesDataToAdapter(query);
     }

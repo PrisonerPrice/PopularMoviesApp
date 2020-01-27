@@ -3,8 +3,10 @@ package android.example.popularmoviesapp.Repository;
 import android.content.Context;
 import android.example.popularmoviesapp.Database.AppDatabase;
 import android.example.popularmoviesapp.Database.Movie;
+import android.example.popularmoviesapp.View.MainActivity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import androidx.lifecycle.LiveData;
 
@@ -57,14 +59,14 @@ public class DataExchanger {
         mainScreenAdapter.setCurrState(state);
     }
 
-    public void fetchDataFromTheWeb(){
+    public void fetchDataFromTheWeb(String query){
         Log.i(TAG, "<<<<<" + "You are fetching data from the web");
         MovieQuery movieAPIQuery = new MovieQuery();
-        movieAPIQuery.execute();
+        movieAPIQuery.execute(query);
     }
 
-    public LiveData<List<Movie>> getLiveMovies(){
-        fetchDataFromTheWeb();
+    public LiveData<List<Movie>> getLiveMovies(String query){
+        fetchDataFromTheWeb(query);
         return appDatabase.movieDao().getAllMovies();
     }
 
@@ -97,25 +99,41 @@ public class DataExchanger {
 
     public static class MovieQuery extends AsyncTask<String, Void, List<Movie>>{
 
+        String query;
+
         @Override
         protected List<Movie> doInBackground(String... urls) {
-            List<Movie> movies = new ArrayList<>();
-            movies.addAll(fetchData(GET_MOST_POPULAR_MOVIES));
-            movies.addAll(fetchData(GET_TOP_RATED_MOVIES));
-            return movies;
+            query = urls[0];
+            List<Movie> fetchedMovies = new ArrayList<>();
+            fetchedMovies.addAll(fetchData(GET_MOST_POPULAR_MOVIES));
+            fetchedMovies.addAll(fetchData(GET_TOP_RATED_MOVIES));
+            return fetchedMovies;
         }
 
         @Override
-        protected void onPostExecute(List<Movie> movies){
+        protected void onPostExecute(List<Movie> fetchedMovies){
 
-            // Setup default view -- popular movies
-            ArrayList<Movie> defaultMovies = new ArrayList<>();
-            for (Movie movie : movies){
-                if (movie.getIsPopular() == 1) defaultMovies.add(movie);
+            // hide progressbar
+            MainActivity.letProgressBarGo();
+
+            // Setup view
+            ArrayList<Movie> resultMovies = new ArrayList<>();
+            switch (query) {
+                case GET_MOST_POPULAR_MOVIES: {
+                    for (Movie movie : fetchedMovies){
+                        if (movie.getIsPopular() == 1) resultMovies.add(movie);
+                    }
+                    break;
+                }
+                case GET_TOP_RATED_MOVIES: {
+                    for (Movie movie : fetchedMovies){
+                        if (movie.getIsHighlyRanked() == 1) resultMovies.add(movie);
+                    }
+                    break;
+                }
             }
-            mainScreenAdapter.setData(defaultMovies);
-
-            DataExchanger.insertRetrievedDataIntoDatabase((ArrayList<Movie>) movies);
+            mainScreenAdapter.setData(resultMovies);
+            DataExchanger.insertRetrievedDataIntoDatabase((ArrayList<Movie>) fetchedMovies);
         }
 
         private List<Movie> fetchData(String query){

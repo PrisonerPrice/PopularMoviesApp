@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.facebook.stetho.Stetho;
 
@@ -27,11 +29,15 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
     private static MainScreenViewModel viewModel;
     private static String query = GET_MOST_POPULAR_MOVIES;
 
+    public static ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
+
+        Log.d(TAG, "<<<<<" + "onCreate() is called");
 
         dataExchanger = new DataExchanger(getApplicationContext(), this);
 
@@ -39,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
         mainScreenSingleView = (RecyclerView) findViewById(R.id.rv_main_screen);
         mainScreenSingleView.setBackgroundResource(R.color.colorPrimaryDark);
+
+        progressBar = (ProgressBar) findViewById(R.id.progress_circular);
+        letProgressBarGo();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
 
@@ -48,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
 
         setView(query);
         mainScreenSingleView.setAdapter(dataExchanger.mainScreenAdapter);
+    }
+
+    public static void letProgressBarCome() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public static void letProgressBarGo() {
+        progressBar.setVisibility(View.GONE);
     }
 
     private void setView(String query) {

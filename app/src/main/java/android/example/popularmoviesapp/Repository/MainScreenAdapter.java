@@ -105,8 +105,9 @@ public class MainScreenAdapter extends RecyclerView.Adapter<MainScreenAdapter.Ma
             holder.movieTitle.setText(title);
             Picasso.get().setLoggingEnabled(false);
             Picasso.get().
-                    load(url).centerCrop().resize(750, 1200).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
+                    load(url).centerCrop().resize(600, 960).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
                     into(holder.moviePoster);
+            // 750 * 1200
         } else{
             Picasso.get().
                     load("https://google.com").placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
