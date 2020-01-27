@@ -8,7 +8,7 @@ This project fully utilizes RecyclerView to provide a polished and smooth user e
 
 ## API Connection
 
-This application needs API connection with The Movie DB (TMDb), you can find settings information including how to generate an API key via this link https://www.themoviedb.org/settings/api After getting the key, you can inplement the key in NetworkUtils.class at this place:
+This application needs API connection with The Movie DB (TMDb), you can find settings information including how to generate an API key via this link https://www.themoviedb.org/settings/api After getting the key, you can inplement the key in Utils/ConstantVars.class at this place:
 
 	private static final String API_KEY = "You need to define your";
 

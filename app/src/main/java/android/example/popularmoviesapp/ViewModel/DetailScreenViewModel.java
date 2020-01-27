@@ -31,7 +31,6 @@ public class DetailScreenViewModel extends AndroidViewModel {
     }
 
     public void setMovie(int position) {
-        Log.i(TAG, "<<<<< You are in setMovie");
         this.position = position;
         this.movie = dataExchanger.mainScreenAdapter.getDetailMovie(position);
         this.state = dataExchanger.mainScreenAdapter.getCurrState();
@@ -46,12 +45,11 @@ public class DetailScreenViewModel extends AndroidViewModel {
     }
 
     public void setBackInformation(Movie movie) {
-        dataExchanger.mainScreenAdapter.setMovieFavorite(position, movie);
-        if (true || this.movie.getIsLiked() != movie.getIsLiked()){
-            Log.i(TAG, "<<<<<" + "Mark movie as favorite");
+        if (this.movie.getIsLiked() != movie.getIsLiked()){
+            Log.d(TAG, "<<<<< " + movie.getTitle() + " " + "isLiked information updates");
             dataExchanger.updateMovieFavorite(movie);
+            dataExchanger.mainScreenAdapter.setMovieFavorite(position, movie);
+            MainScreenViewModel.getInstance(application).notifyDataChanged(movie);
         }
-        MainScreenViewModel.getInstance(application).notifyDataChanged(movie);
-        this.movie = movie;
     }
 }

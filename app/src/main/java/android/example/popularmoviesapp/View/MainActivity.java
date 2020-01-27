@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
 
-        Log.i(TAG, "<<<<<" + "onCreate() is called");
-
         dataExchanger = new DataExchanger(getApplicationContext(), this);
 
         viewModel = MainScreenViewModel.getInstance(getApplication());

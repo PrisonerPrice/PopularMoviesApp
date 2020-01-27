@@ -79,6 +79,22 @@ public class Movie {
         this.updatedAt = updatedAt;
     }
 
+    public Movie(Movie movie) {
+        this.id = movie.getId();
+        this.title = movie.getTitle();
+        this.posterUrl = movie.getPosterUrl();
+        this.userRating = movie.getUserRating();
+        this.releaseYear = movie.getReleaseYear();
+        this.description = movie.getDescription();
+        this.comment = movie.getComment();
+        this.trailerUrl1 = movie.getTrailerUrl1();
+        this.trailerUrl2 = movie.getTrailerUrl2();
+        this.isLiked = movie.getIsLiked();
+        this.isPopular = movie.getIsPopular();
+        this.isHighlyRanked = movie.getIsHighlyRanked();
+        this.updatedAt = movie.getUpdatedAt();
+    }
+
     public int getId() {
         return id;
     }

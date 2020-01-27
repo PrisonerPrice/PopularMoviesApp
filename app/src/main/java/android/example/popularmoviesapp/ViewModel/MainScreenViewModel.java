@@ -13,7 +13,6 @@ import androidx.lifecycle.LiveData;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.example.popularmoviesapp.Networking.NetworkUtils.*;
 import static android.example.popularmoviesapp.Utils.ConstantVars.*;
 
 public class MainScreenViewModel extends AndroidViewModel {

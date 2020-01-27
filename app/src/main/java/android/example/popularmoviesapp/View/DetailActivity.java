@@ -45,7 +45,7 @@ public class DetailActivity extends AppCompatActivity {
 
         detailScreenViewModel = DetailScreenViewModel.getInstance(getApplication());
 
-        movie = detailScreenViewModel.getMovie();
+        movie = new Movie(detailScreenViewModel.getMovie());
         state = detailScreenViewModel.getState();
 
         Log.i(TAG, "<<<<<" + "Current state is: " + state);
