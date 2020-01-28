@@ -10,6 +10,7 @@ import android.example.popularmoviesapp.Repository.MainScreenAdapter;
 import android.example.popularmoviesapp.ViewModel.DetailScreenViewModel;
 import android.example.popularmoviesapp.ViewModel.MainScreenViewModel;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         progressBar = (ProgressBar) findViewById(R.id.progress_circular);
         letProgressBarGo();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numberOfColumns());
 
         mainScreenSingleView.setLayoutManager(gridLayoutManager);
 
@@ -110,5 +111,14 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
             viewModel.deleteAllMovies();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / 400;
+        if (nColumns < 2) return 2;
+        return nColumns;
     }
 }
