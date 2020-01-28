@@ -73,10 +73,10 @@ public class DetailActivity extends AppCompatActivity {
         movieDesc.setText(description);
 
         moviePoster = (ImageView) findViewById(R.id.detail_iv_poster);
-        Picasso.get().
-                load(posterUrl)
-                .centerCrop().resize(375, 600).placeholder(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher).
-                into(moviePoster);
+        Picasso.get()
+                .load(posterUrl).centerCrop().resize(375, 600)
+                .placeholder(R.mipmap.place_holder_image_foreground).centerCrop().resize(375, 600)
+                .into(moviePoster);
 
         favoriteButton = (ImageButton) findViewById(R.id.favorite_btn);
 
