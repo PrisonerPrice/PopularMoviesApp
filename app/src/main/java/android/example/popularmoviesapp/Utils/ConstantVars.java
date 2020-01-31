@@ -6,8 +6,8 @@ public class ConstantVars {
     public final static int STATE_HIGH = 41;
     public final static int STATE_FAV = 40;
 
-    // 2 minutes, for the ease of testing
-    public final static long EXPIRATION_TIME = 1000L * 60 * 2;
+    // 200 minutes, for the ease of testing
+    public final static long EXPIRATION_TIME = 1000L * 60 * 200;
 
     /*
     Network Constants

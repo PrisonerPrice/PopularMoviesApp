@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements MainScreenAdapter
         }
         if (id == R.id.action_Clear_cache){
             viewModel.deleteAllMovies();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
