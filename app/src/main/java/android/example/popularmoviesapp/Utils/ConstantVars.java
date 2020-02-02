@@ -12,7 +12,7 @@ public class ConstantVars {
     /*
     Network Constants
      */
-    private static final String API_KEY = "You need to use your own";
+    private static final String API_KEY = "0e6b1a62f66b41914cdda7759a444a20";
 
     public static final String GET_MOST_POPULAR_MOVIES = "https://api.themoviedb.org/3/movie/popular?api_key=" +
             API_KEY + "&language=en-US&page=1";
