@@ -4,11 +4,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "android.example.popularmoviesapp"
+        applicationId "prisonerprice.example.popularmoviesapp"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,18 +25,21 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation "com.squareup.okhttp3:okhttp:4.2.1"
+    implementation("com.squareup.okhttp3:okhttp:4.5.0")
 
     // Test
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.5.0")
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
 
     // Add Room dependency
     def room_version = "2.2.3"
@@ -49,7 +52,7 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
     // Add material (old design) dependency
-    implementation "com.google.android.material:material:1.2.0-alpha04"
+    implementation "com.google.android.material:material:1.2.0-alpha06"
 
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 }
